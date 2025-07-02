@@ -1,3 +1,7 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
 :root {
   --background: #ffffff;
   --foreground: #171717;
@@ -9,6 +13,7 @@
     --foreground: #ededed;
   }
 }
+
 
 html,
 body {
@@ -28,6 +33,13 @@ body {
   box-sizing: border-box;
   padding: 0;
   margin: 0;
+}
+
+.input {
+  @apply w-full border px-3 py-2 rounded-md shadow-sm;
+}
+.btn {
+  @apply bg-blue-600 text-white px-4 py-2 rounded-md;
 }
 
 a {
