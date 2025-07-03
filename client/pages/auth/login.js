@@ -18,6 +18,22 @@ export default function Login() {
     }
   }, [user, router]);
 
+  const getFriendlyErrorMessage = (err) => {
+    const msg =
+      err?.response?.data?.message ||
+      err?.response?.data?.error ||
+      err?.message ||
+      '';
+
+    const lowerMsg = msg.toLowerCase();
+
+    if (lowerMsg.includes('invalid')) return 'Invalid email or password.';
+    if (lowerMsg.includes('email')) return 'Email not found.';
+    if (lowerMsg.includes('password')) return 'Incorrect password.';
+    if (lowerMsg.includes('required')) return 'All fields are required.';
+    return 'Login failed. Please try again.';
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
@@ -29,7 +45,7 @@ export default function Login() {
       setUser(data.user);
       router.push('/dashboard');
     } catch (err) {
-      setError(err?.message || 'Login failed');
+      setError(getFriendlyErrorMessage(err));
     } finally {
       setLoading(false);
     }
