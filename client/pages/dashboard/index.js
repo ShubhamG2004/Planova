@@ -8,12 +8,16 @@ import { FiPlus, FiLoader, FiAlertCircle, FiFolder, FiChevronRight } from 'react
 
 export default function Dashboard() {
   const router = useRouter();
-  const { user } = useAuth();
+  const { user, logout } = useAuth();
 
   const [projects, setProjects] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [showCreateModal, setShowCreateModal] = useState(false);
+  
+  
+
+
 
   useEffect(() => {
     if (!user) return;
@@ -52,8 +56,19 @@ export default function Dashboard() {
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-8">
           <div>
             <h1 className="text-3xl font-bold text-gray-900">Welcome back, {user?.name}</h1>
-            <p className="text-gray-500 mt-1">Manage your projects and tasks</p>
+            <h1 className="text-3xl text-gray-900">{user?.email}</h1>
+            <h1 className="text-3xl text-gray-900">{user?.id}</h1>
+            <p className="text-gray-500 mt-1 mb-3">Manage your projects and tasks</p>
+  
+
+            <button
+              onClick={() => logout()}
+              className="text-sm text-gray-600 hover:text-red-600 border border-gray-300 px-4 py-2 rounded-lg transition-colors"
+            >
+              Logout
+            </button>
           </div>
+          
           <button
             onClick={() => setShowCreateModal(true)}
             className="mt-4 sm:mt-0 flex items-center gap-2 bg-indigo-600 hover:bg-indigo-700 text-white px-5 py-3 rounded-lg transition-all duration-200 transform hover:-translate-y-0.5 shadow-md hover:shadow-lg"

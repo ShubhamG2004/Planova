@@ -1,17 +1,36 @@
-// pages/projects/[id].js
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 import api from '@/lib/api';
-import { FiLoader, FiAlertCircle, FiTag, FiUsers, FiUser, FiCalendar, FiArrowLeft } from 'react-icons/fi';
+import { useAuth } from '@/contexts/AuthContext';
+import {
+  FiLoader,
+  FiAlertCircle,
+  FiTag,
+  FiUsers,
+  FiUser,
+  FiCalendar,
+  FiArrowLeft,
+  FiEdit2,
+  FiTrash2
+} from 'react-icons/fi';
 import { format } from 'date-fns';
 
 export default function ProjectDetailsPage() {
   const router = useRouter();
   const { id } = router.query;
+  const { user } = useAuth();
 
   const [project, setProject] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+  const [deleting, setDeleting] = useState(false);
+
+  console.log('Check ID match:', user?._id, project?.createdBy?._id);
+  console.log("User from context:", user);
+  // console.log("Fetched project.createdBy:", res.data.createdBy); // Removed invalid reference
+  console.log("Project ID:", project?._id);
+
+
 
   useEffect(() => {
     if (!id) return;
@@ -30,6 +49,20 @@ export default function ProjectDetailsPage() {
 
     fetchProject();
   }, [id]);
+
+  const handleDelete = async () => {
+    if (!confirm('Are you sure you want to delete this project? This action cannot be undone.')) return;
+    setDeleting(true);
+    try {
+      await api.delete(`/projects/${project._id}`);
+      router.push('/dashboard');
+    } catch (err) {
+      setError('Failed to delete project');
+      console.error('Delete error:', err);
+    } finally {
+      setDeleting(false);
+    }
+  };
 
   const statusColors = {
     active: 'bg-green-100 text-green-800',
@@ -64,11 +97,13 @@ export default function ProjectDetailsPage() {
     </div>
   );
 
+  if (!project) return null;
+
   return (
     <div className="min-h-screen bg-gray-50">
       <div className="max-w-4xl mx-auto p-6">
-        {/* Header with back button */}
-        <div className="mb-6">
+        {/* Header with back button and action buttons */}
+        <div className="mb-6 flex justify-between items-center">
           <button
             onClick={() => router.back()}
             className="flex items-center gap-2 text-gray-600 hover:text-indigo-600 transition-colors"
@@ -76,9 +111,30 @@ export default function ProjectDetailsPage() {
             <FiArrowLeft />
             <span>Back to projects</span>
           </button>
+
+          {/* Action buttons - only show if user is the creator */}
+          {user && project && project.createdBy && user._id?.toString() === project.createdBy._id?.toString() && (
+            <div className="flex gap-2">
+              <button
+                onClick={() => router.push(`/projects/${project._id}/edit`)}
+                className="flex items-center gap-2 px-4 py-2 rounded-lg bg-yellow-100 hover:bg-yellow-200 text-yellow-800 transition-colors"
+              >
+                <FiEdit2 size={16} />
+                <span>Edit</span>
+              </button>
+              <button
+                onClick={handleDelete}
+                disabled={deleting}
+                className="flex items-center gap-2 px-4 py-2 rounded-lg bg-red-100 hover:bg-red-200 text-red-800 transition-colors disabled:opacity-50"
+              >
+                <FiTrash2 size={16} />
+                <span>{deleting ? 'Deleting...' : 'Delete'}</span>
+              </button>
+            </div>
+          )}
         </div>
 
-        {/* Project header section */}
+        {/* Main project card */}
         <div className="bg-white rounded-xl shadow-sm p-6 mb-6">
           <div className="flex flex-col sm:flex-row justify-between gap-4 mb-4">
             <div>
@@ -117,9 +173,9 @@ export default function ProjectDetailsPage() {
           )}
         </div>
 
-        {/* Project details grid */}
+        {/* Creator and Members cards */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          {/* Created by card */}
+          {/* Creator card */}
           <div className="bg-white rounded-xl shadow-sm p-6">
             <div className="flex items-center gap-3 mb-4">
               <div className="p-2 bg-indigo-100 rounded-lg text-indigo-600">
@@ -163,7 +219,7 @@ export default function ProjectDetailsPage() {
           </div>
         </div>
 
-        {/* Additional project details can be added here */}
+        {/* Additional project details */}
         <div className="mt-6 bg-white rounded-xl shadow-sm p-6">
           <h2 className="text-lg font-semibold text-gray-800 mb-4">Project Details</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">

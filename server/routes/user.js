@@ -6,7 +6,7 @@ const User = require('../models/User');
 // GET /api/users
 router.get('/', authMiddleware, async (req, res) => {
   try {
-    const users = await User.find({}, 'name email');
+    const users = await User.find({}, '_id name email');
     res.json(users);
   } catch (err) {
     console.error('Failed to fetch users:', err);

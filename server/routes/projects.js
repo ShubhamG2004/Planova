@@ -62,22 +62,18 @@ router.get('/', auth, async (req, res) => {
 });
 
 // ✅ GET /api/projects/:id — Get single project by ID
-router.get('/:id', auth, async (req, res) => {
+router.get('/:id', async (req, res) => {
   try {
     const project = await Project.findById(req.params.id)
-      .populate('createdBy', 'name email')
-      .populate('members', 'name email')
-      .populate('tasks');
+      .populate('createdBy', '_id name email') // ✅ Must include _id
+      .populate('members', '_id name email');
 
     if (!project) return res.status(404).json({ message: 'Project not found' });
 
-    const isMember = project.members.some(m => m._id.equals(req.user._id)) ||
-                     project.createdBy._id.equals(req.user._id);
-    if (!isMember) return res.status(403).json({ message: 'Access denied' });
-
     res.json(project);
   } catch (err) {
-    res.status(500).json({ message: err.message });
+    console.error(err);
+    res.status(500).json({ message: 'Server error' });
   }
 });
 
