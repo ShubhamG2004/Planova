@@ -25,10 +25,7 @@ export default function ProjectDetailsPage() {
   const [error, setError] = useState('');
   const [deleting, setDeleting] = useState(false);
 
-  console.log('Check ID match:', user?._id, project?.createdBy?._id);
-  console.log("User from context:", user);
-  // console.log("Fetched project.createdBy:", res.data.createdBy); // Removed invalid reference
-  console.log("Project ID:", project?._id);
+  
 
 
 
@@ -113,7 +110,7 @@ export default function ProjectDetailsPage() {
           </button>
 
           {/* Action buttons - only show if user is the creator */}
-          {user && project && project.createdBy && user._id?.toString() === project.createdBy._id?.toString() && (
+          {user && project && project.createdBy && user.id?.toString() === project.createdBy._id?.toString() && (
             <div className="flex gap-2">
               <button
                 onClick={() => router.push(`/projects/${project._id}/edit`)}
@@ -139,6 +136,8 @@ export default function ProjectDetailsPage() {
           <div className="flex flex-col sm:flex-row justify-between gap-4 mb-4">
             <div>
               <h1 className="text-3xl font-bold text-gray-900">{project.title}</h1>
+              <h1 className="text-3xl font-bold text-gray-900">{project._id}</h1>
+              <h1 className="text-3xl font-bold text-gray-900">{user.id}</h1>
               <p className="text-gray-600 mt-2">{project.description}</p>
             </div>
             <div className="flex flex-col items-end gap-2">
