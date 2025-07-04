@@ -12,6 +12,10 @@ dotenv.config();
 const authRoutes = require('./routes/auth');
 const userRoutes = require('./routes/user');
 const projectRoutes = require('./routes/projects');
+const inviteRoutes = require('./routes/inviteRoutes');
+
+
+
 
 // Initialize Express app
 const app = express();
@@ -40,6 +44,9 @@ app.use(passport.initialize());
 app.use('/api/auth', authRoutes);
 app.use('/api/users', userRoutes);       
 app.use('/api/projects', projectRoutes); 
+app.use('/api/invites', inviteRoutes);
+
+
 
 // Root route
 app.get('/', (req, res) => {

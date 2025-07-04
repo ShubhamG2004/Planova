@@ -25,9 +25,10 @@ export default function ProjectDetailsPage() {
   const [error, setError] = useState('');
   const [deleting, setDeleting] = useState(false);
 
-  
-
-
+  const [showInviteModal, setShowInviteModal] = useState(false);
+  const [inviteEmail, setInviteEmail] = useState('');
+  const [inviteError, setInviteError] = useState('');
+  const [inviteSuccess, setInviteSuccess] = useState('');
 
   useEffect(() => {
     if (!id) return;
@@ -58,6 +59,18 @@ export default function ProjectDetailsPage() {
       console.error('Delete error:', err);
     } finally {
       setDeleting(false);
+    }
+  };
+
+  const handleInvite = async () => {
+    try {
+      setInviteError('');
+      setInviteSuccess('');
+      await api.post(`/invites/${project._id}`, { email: inviteEmail });
+      setInviteSuccess('Invitation sent successfully');
+      setInviteEmail('');
+    } catch (err) {
+      setInviteError(err.response?.data?.message || 'Failed to send invitation');
     }
   };
 
@@ -109,7 +122,6 @@ export default function ProjectDetailsPage() {
             <span>Back to projects</span>
           </button>
 
-          {/* Action buttons - only show if user is the creator */}
           {user && project && project.createdBy && user.id?.toString() === project.createdBy._id?.toString() && (
             <div className="flex gap-2">
               <button
@@ -136,8 +148,6 @@ export default function ProjectDetailsPage() {
           <div className="flex flex-col sm:flex-row justify-between gap-4 mb-4">
             <div>
               <h1 className="text-3xl font-bold text-gray-900">{project.title}</h1>
-              <h1 className="text-3xl font-bold text-gray-900">{project._id}</h1>
-              <h1 className="text-3xl font-bold text-gray-900">{user.id}</h1>
               <p className="text-gray-600 mt-2">{project.description}</p>
             </div>
             <div className="flex flex-col items-end gap-2">
@@ -151,7 +161,6 @@ export default function ProjectDetailsPage() {
             </div>
           </div>
 
-          {/* Tags section */}
           {project.tags?.length > 0 && (
             <div className="mt-4">
               <div className="flex items-center gap-2 text-gray-600 mb-2">
@@ -172,9 +181,7 @@ export default function ProjectDetailsPage() {
           )}
         </div>
 
-        {/* Creator and Members cards */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          {/* Creator card */}
           <div className="bg-white rounded-xl shadow-sm p-6">
             <div className="flex items-center gap-3 mb-4">
               <div className="p-2 bg-indigo-100 rounded-lg text-indigo-600">
@@ -188,7 +195,6 @@ export default function ProjectDetailsPage() {
             </div>
           </div>
 
-          {/* Members card */}
           <div className="bg-white rounded-xl shadow-sm p-6">
             <div className="flex items-center gap-3 mb-4">
               <div className="p-2 bg-green-100 rounded-lg text-green-600">
@@ -215,10 +221,14 @@ export default function ProjectDetailsPage() {
                 <p className="text-gray-500">No members added to this project</p>
               </div>
             )}
+            {user.id === project.createdBy._id && (
+              <button onClick={() => setShowInviteModal(true)} className="text-sm text-indigo-600 hover:underline mt-4 ml-11">
+                + Add Member
+              </button>
+            )}
           </div>
         </div>
 
-        {/* Additional project details */}
         <div className="mt-6 bg-white rounded-xl shadow-sm p-6">
           <h2 className="text-lg font-semibold text-gray-800 mb-4">Project Details</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -242,6 +252,30 @@ export default function ProjectDetailsPage() {
             </div>
           </div>
         </div>
+
+        {showInviteModal && (
+          <div className="fixed inset-0 bg-black bg-opacity-40 flex justify-center items-center z-50">
+            <div className="bg-white rounded-xl p-6 w-full max-w-md relative">
+              <button onClick={() => setShowInviteModal(false)} className="absolute top-2 right-2 text-gray-500">✕</button>
+              <h2 className="text-lg font-semibold mb-4">Invite Member</h2>
+              <input
+                type="email"
+                value={inviteEmail}
+                onChange={(e) => setInviteEmail(e.target.value)}
+                placeholder="Enter user email"
+                className="w-full px-3 py-2 border rounded-lg mb-4"
+              />
+              <button
+                onClick={handleInvite}
+                className="px-4 py-2 bg-indigo-600 text-white rounded hover:bg-indigo-700"
+              >
+                Send Invitation
+              </button>
+              {inviteError && <p className="text-red-600 mt-2">{inviteError}</p>}
+              {inviteSuccess && <p className="text-green-600 mt-2">{inviteSuccess}</p>}
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );

@@ -1,4 +1,3 @@
-// components/CreateProject.js
 import { useState } from 'react';
 import api from '@/lib/api';
 
@@ -9,6 +8,8 @@ export default function CreateProject({ onClose, onCreateSuccess }) {
   const [tags, setTags] = useState([]);
   const [tagInput, setTagInput] = useState('');
   const [milestones, setMilestones] = useState([{ milestone: '', dueDate: '' }]);
+  const [startDate, setStartDate] = useState('');
+  const [targetDate, setTargetDate] = useState('');
   const [memberEmail, setMemberEmail] = useState('');
   const [memberEmails, setMemberEmails] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -26,8 +27,15 @@ export default function CreateProject({ onClose, onCreateSuccess }) {
         title,
         description,
         status,
+        startDate: startDate ? new Date(startDate) : undefined,
+        targetDate: targetDate ? new Date(targetDate) : undefined,
         tags,
-        roadmap: milestones.filter(m => m.milestone && m.dueDate),
+        roadmap: milestones
+          .filter((m) => m.milestone && m.dueDate)
+          .map((m) => ({
+            milestone: m.milestone.trim(),
+            dueDate: new Date(m.dueDate),
+          })),
         members: memberEmails,
       });
 
@@ -47,6 +55,8 @@ export default function CreateProject({ onClose, onCreateSuccess }) {
     setTags([]);
     setTagInput('');
     setMilestones([{ milestone: '', dueDate: '' }]);
+    setStartDate('');
+    setTargetDate('');
     setMemberEmails([]);
     setMemberEmail('');
   };
@@ -59,6 +69,7 @@ export default function CreateProject({ onClose, onCreateSuccess }) {
         {error && <p className="text-red-600 text-sm mb-2">{error}</p>}
 
         <form onSubmit={createProject} className="space-y-4">
+          {/* Project Name */}
           <div>
             <label className="block text-sm font-medium">Project Name *</label>
             <input
@@ -70,6 +81,7 @@ export default function CreateProject({ onClose, onCreateSuccess }) {
             />
           </div>
 
+          {/* Description */}
           <div>
             <label className="block text-sm font-medium">Description</label>
             <textarea
@@ -79,6 +91,7 @@ export default function CreateProject({ onClose, onCreateSuccess }) {
             />
           </div>
 
+          {/* Status */}
           <div>
             <label className="block text-sm font-medium">Status</label>
             <select
@@ -92,6 +105,29 @@ export default function CreateProject({ onClose, onCreateSuccess }) {
             </select>
           </div>
 
+          {/* Start and Target Dates */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div>
+              <label className="block text-sm font-medium">Start Date</label>
+              <input
+                type="date"
+                value={startDate}
+                onChange={(e) => setStartDate(e.target.value)}
+                className="w-full px-3 py-2 border rounded-lg mt-1"
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium">Target Date</label>
+              <input
+                type="date"
+                value={targetDate}
+                onChange={(e) => setTargetDate(e.target.value)}
+                className="w-full px-3 py-2 border rounded-lg mt-1"
+              />
+            </div>
+          </div>
+
+          {/* Tags */}
           <div>
             <label className="block text-sm font-medium">Tags</label>
             <input
@@ -125,6 +161,7 @@ export default function CreateProject({ onClose, onCreateSuccess }) {
             </div>
           </div>
 
+          {/* Milestones */}
           <div>
             <label className="block text-sm font-medium mb-1">Roadmap / Milestones</label>
             {milestones.map((m, index) => (
@@ -174,6 +211,7 @@ export default function CreateProject({ onClose, onCreateSuccess }) {
             </button>
           </div>
 
+          {/* Members */}
           <div>
             <label className="block text-sm font-medium mb-1">Invite Members by Email</label>
             <div className="flex gap-2 mb-2">
@@ -218,6 +256,7 @@ export default function CreateProject({ onClose, onCreateSuccess }) {
             </div>
           </div>
 
+          {/* Buttons */}
           <div className="flex justify-end gap-2 pt-4">
             <button
               type="button"

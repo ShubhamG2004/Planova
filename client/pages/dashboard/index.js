@@ -56,8 +56,6 @@ export default function Dashboard() {
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-8">
           <div>
             <h1 className="text-3xl font-bold text-gray-900">Welcome back, {user?.name}</h1>
-            <h1 className="text-3xl text-gray-900">{user?.email}</h1>
-            <h1 className="text-3xl text-gray-900">{user?.id}</h1>
             <p className="text-gray-500 mt-1 mb-3">Manage your projects and tasks</p>
   
 
