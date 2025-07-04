@@ -18,6 +18,7 @@ const taskRoutes = require('./routes/taskRoutes');
 
 
 
+
 // Initialize Express app
 const app = express();
 
@@ -47,8 +48,6 @@ app.use('/api/users', userRoutes);
 app.use('/api/projects', projectRoutes); 
 app.use('/api/invites', inviteRoutes);
 app.use('/api/tasks', taskRoutes);
-
-
 
 
 // Root route

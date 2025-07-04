@@ -2,24 +2,24 @@ const Task = require('../models/Task');
 
 // Create a task
 exports.createTask = async (req, res) => {
-  try {
-    const { title, description, assignedTo, priority, status, tags, dueDate } = req.body;
-    const { projectId } = req.params;
+  const { title, description, status, assignedTo, startDate, dueDate } = req.body;
+  const { projectId } = req.params;
 
-    const task = await Task.create({
+  try {
+    const task = new Task({
       title,
       description,
-      project: projectId,
-      assignedTo,
-      priority,
       status,
-      tags,
-      dueDate
+      assignedTo,
+      startDate,
+      dueDate,
+      project: projectId,
     });
 
+    await task.save();
     res.status(201).json(task);
   } catch (err) {
-    console.error('Task creation error:', err);
+    console.error('Error creating task:', err);
     res.status(500).json({ message: 'Failed to create task' });
   }
 };
