@@ -13,6 +13,7 @@ const authRoutes = require('./routes/auth');
 const userRoutes = require('./routes/user');
 const projectRoutes = require('./routes/projects');
 const inviteRoutes = require('./routes/inviteRoutes');
+const taskRoutes = require('./routes/taskRoutes');
 
 
 
@@ -45,6 +46,8 @@ app.use('/api/auth', authRoutes);
 app.use('/api/users', userRoutes);       
 app.use('/api/projects', projectRoutes); 
 app.use('/api/invites', inviteRoutes);
+app.use('/api/tasks', taskRoutes);
+
 
 
 
