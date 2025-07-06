@@ -143,16 +143,17 @@ exports.updateTask = async (req, res) => {
     }
 
     // Update fields
-    task.title = updates.title || task.title;
-    task.description = updates.description || task.description;
-    task.status = updates.status || task.status;
-    task.startDate = updates.startDate || task.startDate;
-    task.dueDate = updates.dueDate || task.dueDate;
-    task.assignedTo = updates.assignedTo || task.assignedTo;
+    task.title = updates.title ?? task.title;
+    task.description = updates.description ?? task.description;
+    task.status = updates.status ?? task.status;
+    task.startDate = updates.startDate ?? task.startDate;
+    task.dueDate = updates.dueDate ?? task.dueDate;
+    task.assignedTo = updates.assignedTo ?? task.assignedTo;
+    task.priority = updates.priority ?? task.priority;
+    task.tags = updates.tags ?? task.tags;
 
-    // ✅ Add priority and tags update
-    if (updates.priority) task.priority = updates.priority;
-    if (updates.tags) task.tags = updates.tags;
+
+  
 
     await task.save();
     res.json(task);

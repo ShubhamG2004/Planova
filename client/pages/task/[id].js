@@ -447,12 +447,18 @@ const TaskDetailsPage = () => {
                     )}
                   </div>
                 </div>
-                {task.priority && (
+                {/* Status and Priority */}
+                <div className="flex items-center gap-3 mb-4">
+                  <span className={`inline-block px-3 py-1 rounded-full text-sm font-medium ${getStatusColor(status)}`}>
+                    {status}
+                  </span>
+                  {task.priority && (
                     <div className="flex items-center gap-1 text-sm">
                       <FiFlag className={`${getPriorityColor(task.priority)}`} />
                       <span className="capitalize text-gray-600">{task.priority} priority</span>
                     </div>
                   )}
+                </div>
 
 
                 {/* Actions */}
