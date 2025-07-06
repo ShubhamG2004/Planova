@@ -150,6 +150,10 @@ exports.updateTask = async (req, res) => {
     task.dueDate = updates.dueDate || task.dueDate;
     task.assignedTo = updates.assignedTo || task.assignedTo;
 
+    // ✅ Add priority and tags update
+    if (updates.priority) task.priority = updates.priority;
+    if (updates.tags) task.tags = updates.tags;
+
     await task.save();
     res.json(task);
   } catch (err) {

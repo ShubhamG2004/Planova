@@ -17,6 +17,12 @@ const taskSchema = new mongoose.Schema({
   assignedTo: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
   startDate: Date,
   dueDate: Date,
+  priority: {
+    type: String,
+    enum: ['low', 'medium', 'high'],
+    default: 'medium' 
+  },
+  tags: [String],
   project: { type: mongoose.Schema.Types.ObjectId, ref: 'Project', required: true },
   comments: [commentSchema]
 }, { timestamps: true });

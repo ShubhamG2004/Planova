@@ -447,6 +447,13 @@ const TaskDetailsPage = () => {
                     )}
                   </div>
                 </div>
+                {task.priority && (
+                    <div className="flex items-center gap-1 text-sm">
+                      <FiFlag className={`${getPriorityColor(task.priority)}`} />
+                      <span className="capitalize text-gray-600">{task.priority} priority</span>
+                    </div>
+                  )}
+
 
                 {/* Actions */}
                 {isAssignedUser && task.status !== 'completed' && (

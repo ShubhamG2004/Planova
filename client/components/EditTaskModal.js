@@ -5,28 +5,34 @@ import api from '@/lib/api';
 
 export default function EditTaskModal({ isOpen, onClose, task, projectId, onUpdated }) {
   const [form, setForm] = useState({
-    title: '',
-    description: '',
-    status: 'todo',
-    startDate: '',
-    dueDate: '',
-    assignedTo: '',
-  });
+        title: '',
+        description: '',
+        status: 'todo',
+        startDate: '',
+        dueDate: '',
+        assignedTo: '',
+        priority: '',
+        tags: [],
+    });
+
 
   const [members, setMembers] = useState([]);
 
   useEffect(() => {
     if (task) {
-      setForm({
+        setForm({
         title: task.title,
         description: task.description,
         status: task.status,
         startDate: task.startDate?.slice(0, 10) || '',
         dueDate: task.dueDate?.slice(0, 10) || '',
-        assignedTo: task.assignedTo?._id || '',
-      });
+        assignedTo: task.assignedTo?.id || '',
+        priority: task.priority || '',
+        tags: task.tags || [],
+        });
     }
-  }, [task]);
+    }, [task]);
+
 
   useEffect(() => {
     if (projectId) {
