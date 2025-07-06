@@ -381,7 +381,7 @@ export default function ProjectDetailsPage() {
                               animate={{ opacity: 1, y: 0 }}
                               whileHover={{ scale: 1.02 }}
                               className="bg-white p-3 rounded-lg border border-gray-200 shadow-xs hover:shadow-sm transition-all cursor-pointer"
-                              onClick={() => router.push(`/projects/${project._id}/tasks/${task._id}`)}
+                              onClick={() => router.push(`/task/${task._id}`)}
                             >
                               <div className="flex justify-between items-start">
                                 <h4 className="font-medium text-gray-800">{task.title}</h4>

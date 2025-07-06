@@ -82,3 +82,42 @@ exports.addCommentToTask = async (req, res) => {
     res.status(500).json({ message: 'Failed to add comment' });
   }
 };
+
+// GET /api/tasks/my — tasks assigned to logged-in user
+exports.getTasksAssignedToUser = async (req, res) => {
+  try {
+    const tasks = await Task.find({ assignedTo: req.user._id })
+      .populate('project', 'title')
+      .sort({ dueDate: 1 });
+
+    res.json(tasks);
+  } catch (err) {
+    console.error('Failed to fetch assigned tasks:', err);
+    res.status(500).json({ message: 'Error loading assigned tasks' });
+  }
+};
+
+
+exports.updateTaskStatus = async (req, res) => {
+  try {
+    const task = await Task.findById(req.params.id);
+
+    if (!task) {
+      return res.status(404).json({ message: 'Task not found' });
+    }
+
+    // Check if the task is assigned and the current user is the assignee
+    if (!task.assignedTo || task.assignedTo.toString() !== req.user._id.toString()) {
+      return res.status(403).json({ message: 'You are not allowed to update this task' });
+    }
+
+    // Update status
+    task.status = req.body.status || task.status;
+    await task.save();
+
+    res.json(task);
+  } catch (error) {
+    console.error('❌ Error updating task status:', error);
+    res.status(500).json({ message: 'Internal server error', error: error.message });
+  }
+};

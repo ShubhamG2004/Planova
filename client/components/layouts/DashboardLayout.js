@@ -6,8 +6,9 @@ import { useAuth } from '@/contexts/AuthContext';
 
 const navItems = [
   { label: 'Home', href: '/dashboard', icon: <FiHome className="text-lg" /> },
-  { label: 'Projects', href: '/projects', icon: <FiFolder className="text-lg" /> },
+  { label: 'Projects', href: '/projects/my', icon: <FiFolder className="text-lg" /> },
   { label: 'Invites', href: '/invites', icon: <FiBell className="text-lg" /> },
+  { label: 'Tasks', href: '/task', icon: <FiBell className="text-lg" /> },
 ];
 
 export default function DashboardLayout({ children }) {

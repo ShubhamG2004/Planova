@@ -7,7 +7,12 @@ const {
   getTasksForProject,
   getTaskById,
   addCommentToTask,
+  getTasksAssignedToUser,
+  updateTaskStatus,
 } = require('../controllers/taskController');
+
+// ✅ Get tasks assigned to logged-in user — needs to be placed BEFORE /:projectId
+router.get('/my', auth, getTasksAssignedToUser);
 
 // ✅ Get single task by ID (with comments)
 router.get('/task/:id', auth, getTaskById);
@@ -15,10 +20,13 @@ router.get('/task/:id', auth, getTaskById);
 // ✅ Add comment to a task (with mentions)
 router.post('/task/:id/comment', auth, addCommentToTask);
 
-// GET /api/tasks/:projectId — get all tasks for a project
+// ✅ Get all tasks for a specific project
 router.get('/:projectId', auth, getTasksForProject);
 
 // ✅ Create a new task under a project
 router.post('/:projectId', auth, createTask);
+
+// Update task status (e.g., mark as completed)
+router.put('/task/:id', auth, updateTaskStatus);
 
 module.exports = router;
