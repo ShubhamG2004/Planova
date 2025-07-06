@@ -121,3 +121,39 @@ exports.updateTaskStatus = async (req, res) => {
     res.status(500).json({ message: 'Internal server error', error: error.message });
   }
 };
+
+
+exports.updateTask = async (req, res) => {
+  try {
+    const taskId = req.params.id;
+    const updates = req.body;
+    const userId = req.user._id;
+
+    const task = await Task.findById(taskId).populate('project');
+    if (!task) return res.status(404).json({ message: 'Task not found' });
+
+    const project = task.project;
+
+    // Check if current user is owner or in admins
+    const isOwner = project.owner.toString() === userId.toString();
+    const isAdmin = project.admins?.some(admin => admin.toString() === userId.toString());
+
+    if (!isOwner && !isAdmin) {
+      return res.status(403).json({ message: 'Not authorized to update this task' });
+    }
+
+    // Update fields
+    task.title = updates.title || task.title;
+    task.description = updates.description || task.description;
+    task.status = updates.status || task.status;
+    task.startDate = updates.startDate || task.startDate;
+    task.dueDate = updates.dueDate || task.dueDate;
+    task.assignedTo = updates.assignedTo || task.assignedTo;
+
+    await task.save();
+    res.json(task);
+  } catch (err) {
+    console.error('Failed to update task:', err);
+    res.status(500).json({ message: 'Internal Server Error' });
+  }
+};

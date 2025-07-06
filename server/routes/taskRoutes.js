@@ -9,6 +9,7 @@ const {
   addCommentToTask,
   getTasksAssignedToUser,
   updateTaskStatus,
+  updateTask,
 } = require('../controllers/taskController');
 
 // ✅ Get tasks assigned to logged-in user — needs to be placed BEFORE /:projectId
@@ -28,5 +29,9 @@ router.post('/:projectId', auth, createTask);
 
 // Update task status (e.g., mark as completed)
 router.put('/task/:id', auth, updateTaskStatus);
+
+// ✅ Update a task
+router.put('/task/:id', auth, updateTask);
+
 
 module.exports = router;
