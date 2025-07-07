@@ -12,25 +12,25 @@ const {
   updateTask,
 } = require('../controllers/taskController');
 
-// ✅ Get tasks assigned to logged-in user — needs to be placed BEFORE /:projectId
+// Get tasks assigned to logged-in user — needs to be placed BEFORE /:projectId
 router.get('/my', auth, getTasksAssignedToUser);
 
-// ✅ Get single task by ID (with comments)
+// Get single task by ID (with comments)
 router.get('/task/:id', auth, getTaskById);
 
-// ✅ Add comment to a task (with mentions)
+// Add comment to a task (with mentions)
 router.post('/task/:id/comment', auth, addCommentToTask);
 
-// ✅ Get all tasks for a specific project
+// Get all tasks for a specific project
 router.get('/:projectId', auth, getTasksForProject);
 
-// ✅ Create a new task under a project
+// Create a new task under a project
 router.post('/:projectId', auth, createTask);
 
 // Update task status (e.g., mark as completed)
 router.put('/task/:id', auth, updateTaskStatus);
 
-// ✅ Update a task
+// Update a task
 router.put('/task/:id', auth, updateTask);
 
 
