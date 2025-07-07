@@ -150,10 +150,7 @@ exports.updateTask = async (req, res) => {
     task.dueDate = updates.dueDate ?? task.dueDate;
     task.assignedTo = updates.assignedTo ?? task.assignedTo;
     task.priority = updates.priority ?? task.priority;
-    task.tags = updates.tags ?? task.tags;
-
-
-  
+    task.tags = updates.tags ?? task.tags;  
 
     await task.save();
     res.json(task);
