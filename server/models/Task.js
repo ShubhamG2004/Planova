@@ -20,9 +20,10 @@ const taskSchema = new mongoose.Schema({
   priority: {
     type: String,
     enum: ['low', 'medium', 'high'],
-    default: 'medium' 
+    default: 'medium'
   },
   tags: [String],
+
   project: { type: mongoose.Schema.Types.ObjectId, ref: 'Project', required: true },
   comments: [commentSchema]
 }, { timestamps: true });

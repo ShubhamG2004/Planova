@@ -134,7 +134,7 @@ exports.updateTask = async (req, res) => {
 
     const project = task.project;
 
-    // Check if current user is owner or in admins
+    // ✅ Authorization check
     const isOwner = project.owner.toString() === userId.toString();
     const isAdmin = project.admins?.some(admin => admin.toString() === userId.toString());
 
@@ -142,18 +142,27 @@ exports.updateTask = async (req, res) => {
       return res.status(403).json({ message: 'Not authorized to update this task' });
     }
 
-    // Update fields
+    // ✅ Update basic fields
     task.title = updates.title ?? task.title;
     task.description = updates.description ?? task.description;
     task.status = updates.status ?? task.status;
     task.startDate = updates.startDate ?? task.startDate;
     task.dueDate = updates.dueDate ?? task.dueDate;
     task.assignedTo = updates.assignedTo ?? task.assignedTo;
-    task.priority = updates.priority ?? task.priority;
-    task.tags = updates.tags ?? task.tags;  
 
+    // ✅ Handle additional fields
+    task.priority = updates.priority ?? task.priority;
+    if (Array.isArray(updates.tags)) {
+      task.tags = updates.tags;
+    }
+
+    // ✅ Save and return updated (populated) task
     await task.save();
-    res.json(task);
+    const updatedTask = await Task.findById(taskId)
+      .populate('assignedTo', 'name email')
+      .populate('project', 'title');
+
+    res.json(updatedTask);
   } catch (err) {
     console.error('Failed to update task:', err);
     res.status(500).json({ message: 'Internal Server Error' });
