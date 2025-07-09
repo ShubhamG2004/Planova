@@ -7,7 +7,7 @@ const api = axios.create({
   withCredentials: false,
 });
 
-// Auto-attach JWT token to every request
+// ✅ Auto-attach JWT token to every request
 api.interceptors.request.use(
   (config) => {
     if (typeof window !== 'undefined') {
