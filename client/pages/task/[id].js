@@ -100,15 +100,18 @@ const TaskDetailsPage = () => {
   };
 
   const handleEditTask = async () => {
-    try {
-      const res = await api.put(`/tasks/task/${id}`, editValues);
-      setTask((prev) => ({ ...prev, ...res.data }));
-      setIsEditing(false);
-    } catch (err) {
-      console.error('Failed to update task:', err);
-      setError('Failed to update task');
-    }
-  };
+      console.log('📤 Sending update:', editValues); // 👈 Add this
+
+      try {
+        const res = await api.put(`/tasks/task/${id}`, editValues);
+        setTask((prev) => ({ ...prev, ...res.data }));
+        setIsEditing(false);
+      } catch (err) {
+        console.error('❌ Failed to update task:', err);
+        setError('Failed to update task');
+      }
+    };
+
 
   const handleDeleteTask = async () => {
     try {
@@ -286,7 +289,7 @@ const TaskDetailsPage = () => {
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">Priority</label>
                   <select
-                    className="w-full border px-3 py-2 rounded focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                    className="w-full ..."
                     value={editValues.priority}
                     onChange={(e) => setEditValues({ ...editValues, priority: e.target.value })}
                   >

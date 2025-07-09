@@ -132,9 +132,10 @@ exports.updateTask = async (req, res) => {
     const task = await Task.findById(taskId).populate('project');
     if (!task) return res.status(404).json({ message: 'Task not found' });
 
+    console.log('UPDATE PAYLOAD RECEIVED:', updates);
+
     const project = task.project;
 
-    // ✅ Authorization check
     const isOwner = project.owner.toString() === userId.toString();
     const isAdmin = project.admins?.some(admin => admin.toString() === userId.toString());
 
@@ -142,7 +143,6 @@ exports.updateTask = async (req, res) => {
       return res.status(403).json({ message: 'Not authorized to update this task' });
     }
 
-    // ✅ Update basic fields
     task.title = updates.title ?? task.title;
     task.description = updates.description ?? task.description;
     task.status = updates.status ?? task.status;
@@ -150,14 +150,16 @@ exports.updateTask = async (req, res) => {
     task.dueDate = updates.dueDate ?? task.dueDate;
     task.assignedTo = updates.assignedTo ?? task.assignedTo;
 
-    // ✅ Handle additional fields
-    task.priority = updates.priority ?? task.priority;
+    if (updates.priority) {
+      task.priority = updates.priority;
+    }
+
     if (Array.isArray(updates.tags)) {
       task.tags = updates.tags;
     }
 
-    // ✅ Save and return updated (populated) task
     await task.save();
+
     const updatedTask = await Task.findById(taskId)
       .populate('assignedTo', 'name email')
       .populate('project', 'title');
