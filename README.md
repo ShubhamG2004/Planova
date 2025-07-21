@@ -1,1 +1,0 @@
-# Planova – Project Management System
